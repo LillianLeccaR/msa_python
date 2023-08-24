@@ -212,5 +212,5 @@ get_weather_forecast = WeatherForecast(
 summary_data_city = get_weather_forecast.generate_summary_fct(
     cities=cities_tot)
 
-print(summary_data_city.head(20))
+print(summary_data_city.head(30))
 summary_data_city.to_csv('temp.csv', index=False, sep=",")
