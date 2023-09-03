@@ -1,6 +1,7 @@
 """Tic tac toe Implementation
     author: Lillian Lecca
 """
+from typing import Any,Literal
 import pandas as pd
 
 board_init = [["A1", "B1", "C1"], ["A2", "B2", "C2"], ["A3", "B3", "C3"]]
@@ -11,8 +12,6 @@ tittle_status = "Status board:  "
 
 dic_row = {"1": 1, "2": 2, "3": 3}
 dic_col = {"A": 1, "B": 2, "C": 3}
-
-win=False
 
 def print_two_boards(tittle_1, tittle_2 , board_1 , board_2):
     """Print current board status"""
@@ -43,12 +42,19 @@ def check_win(board, player):
 
     return False
 
+def change_player(current_player: Any) -> Literal['o', 'x']:
+    return("o" if current_player == "x" else "x")
+
 def is_board_full(board):
     return all(cell != "-" for row in board for cell in row)
 
-def play_game(board_status,win):
+win=False
+full=False
+
+def play_game(board_status,win,full):
     current_player="x"
-    while win == False:
+
+    while win == False and full == False:
         print_two_boards(tittle_position, tittle_status , board_init , board_status)
         player_ans = input( f"Choose a position {current_player} :" )
 
@@ -58,18 +64,21 @@ def play_game(board_status,win):
 
             if board_status[pos_r][pos_c] == "-":
                 board_status[pos_r][pos_c]=current_player
-                if check_win(board_status, current_player):
-                    print_two_boards(tittle_position, tittle_status , board_init , board_status)
-                    print(f"Player {current_player} wins!")
-#                    break
-                elif is_board_full(board_status):
-                    print_two_boards(tittle_position, tittle_status , board_init , board_status)
-                    print("It's a tie!")
-                    break
-                current_player = "o" if current_player == "x" else "x"
+
+                win = check_win(board_status, current_player)
+                full = is_board_full(board_status)
+
+                if win == False: current_player = change_player(current_player)
+
             else:
                 print("\nThat cell is already taken. Choose again.")
         else:
             print("\nInvalid position. Choose again.")
 
-play_game(board_status,win)
+    if win==True:
+        print(f"Player {current_player} wins!")
+    elif full==True:
+        print("It's a tie!")
+    print_two_boards(tittle_position, tittle_status , board_init , board_status)
+
+play_game(board_status,win,full)
