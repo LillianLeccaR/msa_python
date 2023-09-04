@@ -1,96 +1,137 @@
-"""Tic tac toe Implementation
-    author: Lillian Lecca
-"""
-from typing import Any, Literal
+from typing import Dict
 
-board_init = [["A1", "B1", "C1"],
-              ["A2", "B2", "C2"],
-              ["A3", "B3", "C3"]]
+BOARD_POSITIONS = [["A1", "B1", "C1"],
+                   ["A2", "B2", "C2"],
+                   ["A3", "B3", "C3"]]
 
-board_status = [["-" for _ in range(3)] for _ in range(3)]
+BOARD_INIT = [["-" for _ in range(3)] for _ in range(3)]
 
-tittle_position = "Position names:"
-tittle_status = "Status board:  "
-
-dic_row = {"1": 1, "2": 2, "3": 3}
-dic_col = {"A": 1, "B": 2, "C": 3}
+DICT_ROW = {"1": 0, "2": 1, "3": 2}
+DICT_COL = {"A": 0, "B": 1, "C": 2}
 
 
-def print_two_boards(tittle_1, tittle_2, board_1, board_2) -> None:
-    """Print current board status"""
-    print("\n", tittle_1, " "*4, tittle_2)
-    for r in range(0, 3):
-        print("\n|", end="")
-        for c in range(0, 3):
-            print(f"{board_1[r][c]} ", end="| ")
-        print("     | ", end="")
-        for c in range(0, 3):
-            print(f"{board_2[r][c]} ", end="| ")
-    print("\n"*2, end="")
+class TicTacToeGame:
+    """_summary_
+    """
 
+    def __init__(
+            self,
+            board_positions: list[list] = BOARD_POSITIONS,
+            board_init: list[list] = BOARD_INIT,
+            dict_row: Dict = DICT_ROW,
+            dict_col: Dict = DICT_COL,
+            current_player: str = "x") -> None:
+        """_summary_
 
-def valid_position(position, dic_row, dic_col) -> bool:
-    return (True if (dic_row.get(position[1]) != None and dic_col.get(position[0]) != None) else False)
+        Args:
+            board_positions (np.array, optional): _description_. Defaults to BOARD_POSITIONS.
+            board_init (np.array, optional): _description_. Defaults to BOARD_INIT.
+            dict_row (Dict, optional): _description_. Defaults to DICT_ROW.
+            dict_col (Dict, optional): _description_. Defaults to DICT_COL.
+            current_player (str, optional): _description_. Defaults to "x".
+        """
+        self.board_positions = board_positions
+        self.board_status = board_init.copy()
+        self.current_player = current_player
+        self.dict_row = dict_row
+        self.dict_col = dict_col
 
+    def _print_board(self) -> None:
+        """_summary_
+        """
+        print("\nPosition names      Status board:")
+        for r in range(3):
+            print("| " + " | ".join(self.board_positions[r]), end=" |   | ")
+            print(" | ".join(self.board_status[r]) + " |")
 
-def check_win(board, player):
-    for row in board:
-        if all(cell == player for cell in row):
+    def _valid_position(self, position) -> bool:
+        """_summary_
+
+        Args:
+            position (_type_): _description_
+
+        Returns:
+            bool: _description_
+        """
+        row, col = position[1], position[0]
+        return row in self.dict_row and col in self.dict_col
+
+    def _make_move(self, position) -> bool:
+        """_summary_
+
+        Args:
+            position (_type_): _description_
+
+        Returns:
+            bool: _description_
+        """
+        row, col = self.dict_row[position[1]], self.dict_col[position[0]]
+        if self.board_status[row][col] == "-":
+            self.board_status[row][col] = self.current_player
             return True
-
-    for col in range(3):
-        if all(row[col] == player for row in board):
-            return True
-
-    if all(board[i][i] == player for i in range(3)) or all(board[i][2 - i] == player for i in range(3)):
-        return True
-
-    return False
-
-
-def change_player(current_player: Any) -> Literal['o', 'x']:
-    return ("o" if current_player == "x" else "x")
-
-
-def is_board_full(board) -> bool:
-    return all(cell != "-" for row in board for cell in row)
-
-
-win = False
-full = False
-
-
-def play_game(board_status, win, full):
-    current_player = "x"
-
-    while win == False and full == False:
-        print_two_boards(tittle_position, tittle_status,
-                         board_init, board_status)
-        player_ans = input(f"Choose a position {current_player} :")
-
-        if valid_position(player_ans, dic_row, dic_col):
-            pos_r = dic_row.get(player_ans[1])-1
-            pos_c = dic_col.get(player_ans[0])-1
-
-            if board_status[pos_r][pos_c] == "-":
-                board_status[pos_r][pos_c] = current_player
-
-                win = check_win(board_status, current_player)
-                full = is_board_full(board_status)
-
-                if win == False:
-                    current_player = change_player(current_player)
-
-            else:
-                print("\nThat cell is already taken. Choose again.")
         else:
-            print("\nInvalid position. Choose again.")
+            print("\nThat cell is already taken. Choose again.")
+            return False
 
-    if win == True:
-        print(f"Player {current_player} wins!")
-    elif full == True:
-        print("It's a tie!")
-    print_two_boards(tittle_position, tittle_status, board_init, board_status)
+    def _check_win(self) -> bool:
+        """_summary_
+
+        Returns:
+            bool: _description_
+        """
+        for row in self.board_status:
+            if all(cell == self.current_player for cell in row):
+                return True
+
+        for col in range(3):
+            if all(row[col] == self.current_player for row in self.board_status):
+                return True
+
+        if all(self.board_status[i][i] == self.current_player for i in range(3)) or all(self.board_status[i][2 - i] == self.current_player for i in range(3)):
+            return True
+
+        return False
+
+    def _is_board_full(self) -> bool:
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """
+        return all(cell != "-" for row in self.board_status for cell in row)
+
+    def play_game(self) -> None:
+        """_summary_
+        """
+        win = False
+        full = False
+        winner = None
+
+        while not win and not full:
+            self._print_board()
+            player_ans = input(
+                f"Choose a position {self.current_player}: ")
+
+            if len(player_ans) == 2 and self._valid_position(player_ans):
+                if self._make_move(player_ans):
+                    win = self._check_win()
+                    full = self._is_board_full()
+                    if win:
+                        winner = self.current_player
+                    self.current_player = "o" if self.current_player == "x" else "x"
+                else:
+                    continue
+            else:
+                print("\nInvalid position. Choose again.")
+
+        self._print_board()
+
+        if winner:
+            print(f"Player {winner} wins!")
+        else:
+            print("It's a tie!")
 
 
-play_game(board_status, win, full)
+if __name__ == "__main__":
+    TicTacToe = TicTacToeGame()
+    TicTacToe.play_game()
