@@ -11,7 +11,7 @@ DICT_COL = {"A": 0, "B": 1, "C": 2}
 
 
 class TicTacToeGame:
-    """_summary_
+    """Class to create tic tac toe game.
     """
 
     def __init__(
@@ -21,14 +21,22 @@ class TicTacToeGame:
             dict_row: Dict = DICT_ROW,
             dict_col: Dict = DICT_COL,
             current_player: str = "x") -> None:
-        """_summary_
+        """Initializes the tic tac toe class
 
         Args:
-            board_positions (np.array, optional): _description_. Defaults to BOARD_POSITIONS.
-            board_init (np.array, optional): _description_. Defaults to BOARD_INIT.
-            dict_row (Dict, optional): _description_. Defaults to DICT_ROW.
-            dict_col (Dict, optional): _description_. Defaults to DICT_COL.
-            current_player (str, optional): _description_. Defaults to "x".
+            board_positions (np.array, optional):
+                Matrix with the name of available positions.
+                Defaults to BOARD_POSITIONS.
+            board_init (np.array, optional): Initial board status.
+                                                Defaults to BOARD_INIT.
+            dict_row (Dict, optional):
+                Dictionary to decode values to get the row position for every
+                position enter by the user. Defaults to DICT_ROW.
+            dict_col (Dict, optional):
+                Dictionary to decode values to get the col position for every
+                position enter by the user. Defaults to DICT_COL.
+            current_player (str, optional): Icon for the start player.
+                                            Defaults to "x".
         """
         self.board_positions = board_positions
         self.board_status = board_init.copy()
@@ -37,33 +45,38 @@ class TicTacToeGame:
         self.dict_col = dict_col
 
     def _print_board(self) -> None:
-        """_summary_
+        """Function to print the matrix with the available positions and
+            the current status board.
         """
         print("\nPosition names      Status board:")
         for r in range(3):
             print("| " + " | ".join(self.board_positions[r]), end=" |   | ")
             print(" | ".join(self.board_status[r]) + " |")
 
-    def _valid_position(self, position) -> bool:
-        """_summary_
+    def _valid_position(self,
+                        position: str) -> bool:
+        """Function to validate is the position chosen by the current player
+            follow the stucture defined in the position names.
 
         Args:
-            position (_type_): _description_
+            position (str): Position enter by the current player.
 
         Returns:
-            bool: _description_
+            bool: Bool to validate if the position enter by the current player follow
+            the structure of positiones defined in the "positions names" matrix printed.
         """
         row, col = position[1], position[0]
         return row in self.dict_row and col in self.dict_col
 
     def _make_move(self, position) -> bool:
-        """_summary_
+        """Function to update the status board, if it has not been used.
 
         Args:
-            position (_type_): _description_
+            position (str): Position enter by the current player.
 
         Returns:
-            bool: _description_
+            bool: Bool with the result of validate is the position chosen by the current
+            player was pasted in the board status.
         """
         row, col = self.dict_row[position[1]], self.dict_col[position[0]]
         if self.board_status[row][col] == "-":
@@ -74,10 +87,10 @@ class TicTacToeGame:
             return False
 
     def _check_win(self) -> bool:
-        """_summary_
+        """Function to validate if the current player has won.
 
         Returns:
-            bool: _description_
+            bool: Bool to know if the game should finish because there is a winner.
         """
         for row in self.board_status:
             if all(cell == self.current_player for cell in row):
@@ -93,15 +106,15 @@ class TicTacToeGame:
         return False
 
     def _is_board_full(self) -> bool:
-        """_summary_
+        """Function to validate if exists positions not used in the status board.
 
         Returns:
-            _type_: _description_
+            bool: Bool to know if exists positions not used in the status board.
         """
         return all(cell != "-" for row in self.board_status for cell in row)
 
     def play_game(self) -> None:
-        """_summary_
+        """Function to play tic tac toe.
         """
         win = False
         full = False
@@ -132,6 +145,5 @@ class TicTacToeGame:
             print("It's a tie!")
 
 
-if __name__ == "__main__":
-    TicTacToe = TicTacToeGame()
-    TicTacToe.play_game()
+TicTacToe = TicTacToeGame()
+TicTacToe.play_game()
