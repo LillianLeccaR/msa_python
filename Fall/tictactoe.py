@@ -142,7 +142,7 @@ class TicTacToeGame:
         if winner:
             print(f"Player {winner} wins!")
         else:
-            print("It's a tie! 2020")
+            print("It's a tie!")
 
 
 TicTacToe = TicTacToeGame()
